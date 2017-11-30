@@ -21,3 +21,6 @@ node_modules/
 
 # Optional npm cache direc
 .npm
+
+# Package adhook look
+package-lock.json
