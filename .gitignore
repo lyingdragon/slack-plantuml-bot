@@ -1,0 +1,23 @@
+# work/result directorys
+/src/typings/
+/dist/
+/build/
+.publish/
+
+# transpile and result sources
+app/js/app.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Coverage directory used by tools like istanbul
+**/coverage/
+*.js.map
+
+# Dependency directory
+node_modules/
+
+# Optional npm cache direc
+.npm
