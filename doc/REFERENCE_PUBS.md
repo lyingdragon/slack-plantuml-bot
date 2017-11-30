@@ -7,3 +7,9 @@
 
 - 最新版TypeScript 2.6+Webpack 3の環境構築まとめ
   - <https://ics.media/entry/16329>
+
+
+## webpack
+
+- ビルドエラーを回避するための対策
+  - <https://github.com/webpack/webpack/issues/2091>

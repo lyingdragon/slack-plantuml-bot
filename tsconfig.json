@@ -8,7 +8,8 @@
     // node_modules からライブラリを読み込む
     "moduleResolution": "node",
     "lib": [
-      "es2017"
+      "es2017",
+      "dom"
     ],
     // ここからは「出力最小化」と「コンパイル時チェック」設定。
     "removeComments": true,
