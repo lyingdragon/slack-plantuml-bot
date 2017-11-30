@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    // TSはECMAScript 5に変換
+    "target": "es5",
+    // TSのモジュールはES Modulesとして出力
+    "module": "es2015",
+    // node_modules からライブラリを読み込む
+    "moduleResolution": "node",
+    "lib": [
+      "es2017"
+    ],
+    // ここからは「出力最小化」と「コンパイル時チェック」設定。
+    "removeComments": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "newLine": "LF",
+    "forceConsistentCasingInFileNames": true
+  }
+}
