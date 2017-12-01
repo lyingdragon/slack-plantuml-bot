@@ -7,7 +7,7 @@ export default class Bot {
     }
     /** プログラムのエントリーポイント。 */
     public run() {
-        const botToken:any = process.env.token;
+        const botToken: any = process.env.token;
         if (!botToken) {
             console.log('Error: Specify token in environment');
             process.exit(1);
@@ -25,12 +25,24 @@ export default class Bot {
             controller.storage.users.get(message.user, (err: any, user: any) => {
                 console.error('error:' + err);
                 if (user && user.name) {
-                        bot.reply(message, 'Hello ' + user.name + '!!');
+                    bot.reply(message, 'Hello ' + user.name + '!!');
                 } else {
+                    bot.reply(message, '…' + message.text + 'ですか。');
                     bot.reply(message, '諦めたらそこで試合終了ですよ。');
                 }
             });
         });
+        controller.hears(['image', 'im'], 'direct_message,direct_mention,mention', (bot: any, message: any) => {
+            const fs = require('fs');
+                bot.api.files.upload({
+                    file: fs.createReadStream('./5000tyouen01.png'),
+                    filename: 'hoge.png',
+                    channels: message.channel
+                }, function (err:any , res:any) {
+                    if (err) console.log(err + ',' + res);
+                })
+        });
+
     }
 
 }
