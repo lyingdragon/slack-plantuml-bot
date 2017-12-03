@@ -9,7 +9,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --no-cache"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,24 @@
     "url": "https://github.com/kazuhito-m/slack-plantuml-bot/issues"
   },
   "homepage": "https://github.com/kazuhito-m/slack-plantuml-bot#readme",
+  "jest": {
+    "testRegex": ".*/test/.*Test\\.ts$",
+    "transform": {
+      "^.+\\.ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ]
+  },
   "devDependencies": {
+    "@types/jest": "^21.1.8",
     "@types/node": "^8.0.53",
     "awesome-typescript-loader": "^3.4.0",
+    "jest": "^21.2.1",
     "source-map-loader": "^0.2.3",
+    "ts-jest": "^21.2.4",
     "typescript": "^2.6.2",
     "webpack": "^3.8.1"
   },
