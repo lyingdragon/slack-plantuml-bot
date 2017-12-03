@@ -1,3 +1,6 @@
+/**
+ * PlantUMLの変換サイトで使っている「よくわからないエンコード方式」を移植したもの。
+ */
 export default class SpecialEncoderForPlantUmlSite {
 
     public encode64(data: string) {
@@ -28,24 +31,14 @@ export default class SpecialEncoderForPlantUmlSite {
     }
 
     private encode6bit(b: number) {
-        if (b < 10) {
-            return String.fromCharCode(48 + b);
-        }
+        if (b < 10) return String.fromCharCode(48 + b);
         b -= 10;
-        if (b < 26) {
-            return String.fromCharCode(65 + b);
-        }
+        if (b < 26) return String.fromCharCode(65 + b);
         b -= 26;
-        if (b < 26) {
-            return String.fromCharCode(97 + b);
-        }
+        if (b < 26) return String.fromCharCode(97 + b);
         b -= 26;
-        if (b == 0) {
-            return '-';
-        }
-        if (b == 1) {
-            return '_';
-        }
+        if (b == 0) return '-';
+        if (b == 1) return '_';
         return '?';
     }
 }
