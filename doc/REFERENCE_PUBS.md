@@ -18,3 +18,14 @@
 
 - 真似たサンプル
   - <https://qiita.com/Sekky0905/items/e54c7fc124c3f2b6d152>
+
+### TypeScript + Jest
+
+- Typescrpt + Jest導入
+  - <https://qiita.com/nju33/items/72992bd4941b96bc4ce5>
+- Facebook製のJavaScriptテストツール「Jest」の逆引き使用例
+  - <https://qiita.com/chimame/items/e97883fd46b67529d59f>
+- 本家のマニュアル
+  - <https://facebook.github.io/jest/docs/en/getting-started.html>
+- `import` がエラーになった際のヒント
+  - <https://github.com/facebook/jest/issues/2081>
