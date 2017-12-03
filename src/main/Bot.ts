@@ -3,6 +3,7 @@ import { SlackController } from 'botkit';
 
 import TestEvent from './event/TestEvent';
 import TestImageEvent from './event/TestImageEvent';
+import EchoEvent from './event/EchoEvent';
 
 export default class Bot {
     /** コンストラクタ。 */
@@ -23,8 +24,9 @@ export default class Bot {
         }).startRTM();
 
         // イベント登録。
-        new TestEvent(controller).registerEvent();
-        new TestImageEvent(controller).registerEvent();
+        new TestEvent(controller).register();
+        new TestImageEvent(controller).register();
+        new EchoEvent(controller).register();
     }
 
 }
