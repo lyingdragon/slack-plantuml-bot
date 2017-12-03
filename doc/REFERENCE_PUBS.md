@@ -29,3 +29,9 @@
   - <https://facebook.github.io/jest/docs/en/getting-started.html>
 - `import` がエラーになった際のヒント
   - <https://github.com/facebook/jest/issues/2081>
+
+
+## その他・言語など
+
+- TypeScriptでヒアドキュメント
+  - <https://qiita.com/ConquestArrow/items/1311a2e6429e495a9d9c>
