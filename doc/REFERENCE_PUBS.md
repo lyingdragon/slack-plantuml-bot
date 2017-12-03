@@ -35,3 +35,7 @@
 
 - TypeScriptでヒアドキュメント
   - <https://qiita.com/ConquestArrow/items/1311a2e6429e495a9d9c>
+- BroutherのJavaScriptの `unescape()` 関数が `` の文字コードに変換される話
+  - <http://www.broadband-xp.com/hidesource/escape.html>
+- TypeScriptでconsoleすら最初使えなかったのはこのため？
+  - <https://gldraphael.com/blog/writing-a-node-console-app-in-typescript/>
