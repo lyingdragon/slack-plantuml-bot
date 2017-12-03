@@ -2,13 +2,13 @@ import { SlackController } from 'botkit';
 
 export default class TestImageEvent {
 
-    private controller: SlackController;
+    private readonly controller: SlackController;
 
     public constructor(controller: SlackController) {
         this.controller = controller;
     }
 
-    public registerEvent() {
+    public register() {
         const controller: SlackController = this.controller;
         controller.hears(['image', 'im'], 'direct_message,direct_mention,mention', (bot: any, message: any) => {
             const fs = require('fs');

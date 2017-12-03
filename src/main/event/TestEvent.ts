@@ -2,13 +2,13 @@ import { SlackController } from 'botkit';
 
 export default class TestTestEvent {
 
-    private controller: SlackController;
+    private readonly controller: SlackController;
 
     public constructor(controller: SlackController) {
         this.controller = controller;
     }
 
-    public registerEvent() {
+    public register() {
         const controller: SlackController = this.controller;
         controller.hears(['hello', 'hi', 'おれ'], 'direct_message,direct_mention,mention', (bot: any, message: any) => {
             controller.storage.users.get(message.user, (err: any, user: any) => {
