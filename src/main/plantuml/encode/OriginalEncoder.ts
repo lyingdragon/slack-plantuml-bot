@@ -1,7 +1,7 @@
 /**
  * PlantUMLの変換サイトで使っている「よくわからないエンコード方式」を移植したもの。
  */
-export default class SpecialEncoderForPlantUmlSite {
+export default class OriginalEncoder {
 
     public encode64(data: string) {
         let r: string = "";

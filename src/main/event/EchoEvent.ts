@@ -1,11 +1,9 @@
 import { SlackController, SlackBot, SlackMessage } from 'botkit';
 
-// import * as http from 'http'
 import * as querystring from 'querystring';
-// import * as zlib from 'zlib';
-import OriginalZip from '../plantuml/zip/OriginalZip'
 import * as iconv from 'iconv-lite';
-import SpecialEncoderForPlantUmlSite from '../plantuml/SpecialEncoderForPlantUmlSite'
+import OriginalZip from '../plantuml/zip/OriginalZip'
+import OriginalEncoder from '../plantuml/encode/OriginalEncoder'
 
 export default class EchoEvent {
     private readonly controller: SlackController;
@@ -28,13 +26,11 @@ export default class EchoEvent {
         const decoded: string = querystring.unescape(encoded);
         const charsetConverted = iconv.decode(Buffer.from(decoded, 'UTF-8'), 'ISO-8859-1');
         console.debug('charsetConverted:' + charsetConverted);
-        // let deflated:string = zlib.deflateSync(charsetConverted ,{level : 9}).toString();
         let deflated: string = new OriginalZip().deflate(charsetConverted, 9);
         console.debug('deflated:' + deflated);
-        const encoder = new SpecialEncoderForPlantUmlSite();
+        const encoder = new OriginalEncoder();
         const result: string = encoder.encode64(deflated);
         console.debug('result:' + result);
-
 
         return result;
     }
