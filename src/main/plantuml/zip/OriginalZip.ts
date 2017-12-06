@@ -1,6 +1,6 @@
 // http://s.plantuml.com/synchro.js のTypeScriptへの移植。
 
-class zip_DeflateCT {
+class DeflateCT {
 
     private _fc: number;
     private _dl: number;
@@ -25,14 +25,14 @@ class zip_DeflateCT {
 
 }
 
-class zip_DeflateBuffer {
+class DeflateBuffer {
 
-    private _next: zip_DeflateBuffer | null = null;
+    private _next: DeflateBuffer | null = null;
     private _len: number = 0;
     private _ptr = new Array(1024 * 8);
     private _off: number = 0;
 
-    get next(): zip_DeflateBuffer | null {
+    get next(): DeflateBuffer | null {
         return this._next;
     }
     get len(): number {
@@ -45,7 +45,7 @@ class zip_DeflateBuffer {
         return this._off;
     }
 
-    set next(value: zip_DeflateBuffer | null) {
+    set next(value: DeflateBuffer | null) {
         this._next = value;
     }
     set len(value: number) {
@@ -57,9 +57,9 @@ class zip_DeflateBuffer {
 
 }
 
-class zip_DeflateTreeDesc {
-    public dyn_tree: Array<zip_DeflateCT>;	// the dynamic tree
-    public static_tree: Array<zip_DeflateCT> | null;	// corresponding static tree or NULL
+class DeflateTreeDesc {
+    public dyn_tree: Array<DeflateCT>;	// the dynamic tree
+    public static_tree: Array<DeflateCT> | null;	// corresponding static tree or NULL
     public extra_bits: Array<number>;	// extra bits for each code or NULL
     public extra_base = 0;	// base index for extra_bits
     public elems = 0;		// max number of elements in the tree
@@ -67,7 +67,7 @@ class zip_DeflateTreeDesc {
     public max_code = 0;		// largest code with non zero frequency
 }
 
-class zip_DeflateConfiguration {
+class DeflateConfiguration {
     public readonly max_chain: number; // reduce lazy search above this match length
     public readonly nice_length: number; // do not perform lazy search above this match length
     public readonly max_lazy: number; // quit search above this match length
@@ -128,9 +128,9 @@ export default class OriginalZip {
     private readonly zip_H_SHIFT: number = (this.zip_HASH_BITS + this.zip_MIN_MATCH - 1) / this.zip_MIN_MATCH;
 
     /* private readonly iables */
-    private zip_free_queue: zip_DeflateBuffer | null;
-    private zip_qhead: zip_DeflateBuffer | null;
-    private zip_qtail: zip_DeflateBuffer;
+    private zip_free_queue: DeflateBuffer | null;
+    private zip_qhead: DeflateBuffer | null;
+    private zip_qtail: DeflateBuffer;
     private zip_initflag: boolean;
     private zip_outbuf: Array<number>;
     private zip_outcnt: number;
@@ -160,14 +160,14 @@ export default class OriginalZip {
     private zip_nice_match: number;
 
     private zip_compr_level: number;
-    private zip_dyn_ltree: Array<zip_DeflateCT>;
-    private zip_dyn_dtree: Array<zip_DeflateCT>;
-    private zip_static_ltree: Array<zip_DeflateCT>;
-    private zip_static_dtree: Array<zip_DeflateCT>;
-    private zip_bl_tree: Array<zip_DeflateCT>;
-    private zip_l_desc: zip_DeflateTreeDesc;
-    private zip_d_desc: zip_DeflateTreeDesc;
-    private zip_bl_desc: zip_DeflateTreeDesc;
+    private zip_dyn_ltree: Array<DeflateCT>;
+    private zip_dyn_dtree: Array<DeflateCT>;
+    private zip_static_ltree: Array<DeflateCT>;
+    private zip_static_dtree: Array<DeflateCT>;
+    private zip_bl_tree: Array<DeflateCT>;
+    private zip_l_desc: DeflateTreeDesc;
+    private zip_d_desc: DeflateTreeDesc;
+    private zip_bl_desc: DeflateTreeDesc;
     private zip_bl_count: Array<number>;
     private zip_heap: Array<number>;
     private zip_heap_len: number;
@@ -195,16 +195,16 @@ export default class OriginalZip {
     private readonly zip_bl_order = new Array(16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15);
 
     private readonly zip_configuration_table = new Array(
-        new zip_DeflateConfiguration(0, 0, 0, 0),
-        new zip_DeflateConfiguration(4, 4, 8, 4),
-        new zip_DeflateConfiguration(4, 5, 16, 8),
-        new zip_DeflateConfiguration(4, 6, 32, 32),
-        new zip_DeflateConfiguration(4, 4, 16, 16),
-        new zip_DeflateConfiguration(8, 16, 32, 32),
-        new zip_DeflateConfiguration(8, 16, 128, 128),
-        new zip_DeflateConfiguration(8, 32, 128, 256),
-        new zip_DeflateConfiguration(32, 128, 258, 1024),
-        new zip_DeflateConfiguration(32, 258, 258, 4096));
+        new DeflateConfiguration(0, 0, 0, 0),
+        new DeflateConfiguration(4, 4, 8, 4),
+        new DeflateConfiguration(4, 5, 16, 8),
+        new DeflateConfiguration(4, 6, 32, 32),
+        new DeflateConfiguration(4, 4, 16, 16),
+        new DeflateConfiguration(8, 16, 32, 32),
+        new DeflateConfiguration(8, 16, 128, 128),
+        new DeflateConfiguration(8, 32, 128, 256),
+        new DeflateConfiguration(32, 128, 258, 1024),
+        new DeflateConfiguration(32, 258, 258, 4096));
 
     public deflate = (str: string, level: number): string => {
         this.zip_deflate_data = str;
@@ -242,24 +242,24 @@ export default class OriginalZip {
         this.zip_d_buf = new Array(this.zip_DIST_BUFSIZE);
         this.zip_l_buf = new Array(this.zip_INBUFSIZ + this.zip_INBUF_EXTRA);
         this.zip_prev = new Array(1 << this.zip_BITS);
-        this.zip_dyn_ltree = new Array<zip_DeflateCT>(this.zip_HEAP_SIZE);
+        this.zip_dyn_ltree = new Array<DeflateCT>(this.zip_HEAP_SIZE);
         for (i = 0; i < this.zip_HEAP_SIZE; i++)
-            this.zip_dyn_ltree[i] = new zip_DeflateCT();
+            this.zip_dyn_ltree[i] = new DeflateCT();
         this.zip_dyn_dtree = new Array(2 * this.zip_D_CODES + 1);
         for (i = 0; i < 2 * this.zip_D_CODES + 1; i++)
-            this.zip_dyn_dtree[i] = new zip_DeflateCT();
+            this.zip_dyn_dtree[i] = new DeflateCT();
         this.zip_static_ltree = new Array(this.zip_L_CODES + 2);
         for (i = 0; i < this.zip_L_CODES + 2; i++)
-            this.zip_static_ltree[i] = new zip_DeflateCT();
+            this.zip_static_ltree[i] = new DeflateCT();
         this.zip_static_dtree = new Array(this.zip_D_CODES);
         for (i = 0; i < this.zip_D_CODES; i++)
-            this.zip_static_dtree[i] = new zip_DeflateCT();
+            this.zip_static_dtree[i] = new DeflateCT();
         this.zip_bl_tree = new Array(2 * this.zip_BL_CODES + 1);
         for (i = 0; i < 2 * this.zip_BL_CODES + 1; i++)
-            this.zip_bl_tree[i] = new zip_DeflateCT();
-        this.zip_l_desc = new zip_DeflateTreeDesc();
-        this.zip_d_desc = new zip_DeflateTreeDesc();
-        this.zip_bl_desc = new zip_DeflateTreeDesc();
+            this.zip_bl_tree[i] = new DeflateCT();
+        this.zip_l_desc = new DeflateTreeDesc();
+        this.zip_d_desc = new DeflateTreeDesc();
+        this.zip_bl_desc = new DeflateTreeDesc();
         this.zip_bl_count = new Array(this.zip_MAX_BITS + 1);
         this.zip_heap = new Array(2 * this.zip_L_CODES + 1);
         this.zip_depth = new Array(2 * this.zip_L_CODES + 1);
@@ -566,7 +566,7 @@ export default class OriginalZip {
      */
     private zip_ct_tally = (dist: number, lc: number) => {
 
-        
+
         this.zip_l_buf[this.zip_last_lit++] = lc;
 
 
@@ -614,7 +614,7 @@ export default class OriginalZip {
 
         if (this.zip_static_dtree[0].dl != 0) return; // ct_init already called
 
-        const lDesc: zip_DeflateTreeDesc = this.zip_l_desc;
+        const lDesc: DeflateTreeDesc = this.zip_l_desc;
         lDesc.dyn_tree = this.zip_dyn_ltree;
         lDesc.static_tree = this.zip_static_ltree;
         lDesc.extra_bits = this.zip_extra_lbits;
@@ -678,8 +678,8 @@ export default class OriginalZip {
         }
 
         // Initialize the first block of the first file:
-	    this.zip_init_block();
-        
+        this.zip_init_block();
+
     }
 
     /**
@@ -687,7 +687,7 @@ export default class OriginalZip {
      * @param tree the tree to decorate.
      * @param max_code largest code with non zero frequency.
      */
-    private zip_gen_codes = (tree: Array<zip_DeflateCT>, max_code: number) => {
+    private zip_gen_codes = (tree: Array<DeflateCT>, max_code: number) => {
         const next_code = new Array(this.zip_MAX_BITS + 1); // next code value for each bit length
         let code = 0;		// running code value
 
@@ -725,7 +725,7 @@ export default class OriginalZip {
      */
     private zip_flush_block = (eof: number) => {
 
-        
+
         let stored_len = this.zip_strstart - this.zip_block_start;	// length of input block
         this.zip_flag_buf[this.zip_last_flags] = this.zip_flags; // Save the flags for the last 8 items
 
@@ -735,7 +735,7 @@ export default class OriginalZip {
 
         const max_blindex = this.zip_build_bl_tree(); // index of last bit length code of non zero freq
 
-        
+
         let opt_lenb = (this.zip_opt_len + 3 + 7) >> 3;
         const static_lenb = (this.zip_static_len + 3 + 7) >> 3; // opt_len and static_len in bytes
 
@@ -758,7 +758,7 @@ export default class OriginalZip {
             this.zip_compress_block(this.zip_static_ltree, this.zip_static_dtree);
         } else {
 
-            
+
             this.zip_send_bits((this.zip_DYN_TREES << 1) + eof, 3);
             this.zip_send_all_trees(this.zip_l_desc.max_code + 1,
                 this.zip_d_desc.max_code + 1,
@@ -825,7 +825,7 @@ export default class OriginalZip {
      * @param ltree literal tree. 
      * @param dtree distance tree.
      */
-    private zip_compress_block = (ltree: Array<zip_DeflateCT>, dtree: Array<zip_DeflateCT>) => {
+    private zip_compress_block = (ltree: Array<DeflateCT>, dtree: Array<DeflateCT>) => {
 
         let dist: number;		// distance of matched string
         let lc: number;		// match length or unmatched char (if dist == 0)
@@ -840,7 +840,7 @@ export default class OriginalZip {
             if ((lx & 7) == 0)
                 flag = this.zip_flag_buf[fx++];
 
-                
+
             lc = this.zip_l_buf[lx++] & 0xff;
             if ((flag & 1) == 0) {
                 this.zip_SEND_CODE(lc, ltree); /* send a literal byte */
@@ -861,7 +861,7 @@ export default class OriginalZip {
                 if (extra != 0) {
                     dist -= this.zip_base_dist[code];
 
-                    
+
                     this.zip_send_bits(dist, extra);   // send the extra distance bits
                 }
             } // literal or match pair ?
@@ -871,7 +871,7 @@ export default class OriginalZip {
         this.zip_SEND_CODE(this.zip_END_BLOCK, ltree);
     }
 
-    private zip_SEND_CODE = (c: number, tree: Array<zip_DeflateCT>) => {
+    private zip_SEND_CODE = (c: number, tree: Array<DeflateCT>) => {
         this.zip_send_bits(tree[c].fc, tree[c].dl);
     }
 
@@ -883,16 +883,16 @@ export default class OriginalZip {
 
         this.zip_dyn_ltree[this.zip_END_BLOCK].fc = 1;
         this.zip_opt_len = this.zip_static_len = 0;
-        this.zip_last_lit = 0; 
-        this.zip_last_dist = 0; 
+        this.zip_last_lit = 0;
+        this.zip_last_dist = 0;
         this.zip_last_flags = 0;
         this.zip_flags = 0;
         this.zip_flag_bit = 1;
     }
 
     private zip_send_all_trees = (lcodes: number, dcodes: number, blcodes: number) => { // number of codes for each tree
-        
-        
+
+
         this.zip_send_bits(lcodes - 257, 5); // not +255 as stated in appnote.txt
         this.zip_send_bits(dcodes - 1, 5);
         this.zip_send_bits(blcodes - 4, 4); // not -3 as stated in appnote.txt
@@ -908,7 +908,7 @@ export default class OriginalZip {
      * @param tree the tree to be scanned.
      * @param max_code and its largest code of non zero frequency.
      */
-    private zip_send_tree = (tree: Array<zip_DeflateCT>, max_code: number) => {
+    private zip_send_tree = (tree: Array<DeflateCT>, max_code: number) => {
 
         let nextlen = tree[0].dl;	// length of next code
 
@@ -972,13 +972,13 @@ export default class OriginalZip {
         }
     }
 
-    private zip_new_queue = (): zip_DeflateBuffer => {
-        let p: zip_DeflateBuffer;
+    private zip_new_queue = (): DeflateBuffer => {
+        let p: DeflateBuffer;
         if (this.zip_free_queue != null) {
             p = this.zip_free_queue;
             this.zip_free_queue = this.zip_free_queue.next;
         } else {
-            p = new zip_DeflateBuffer();
+            p = new DeflateBuffer();
         }
         p.next = null;
         p.len = 0;
@@ -1025,7 +1025,7 @@ export default class OriginalZip {
         return i;
     }
 
-    private zip_reuse_queue = (p: zip_DeflateBuffer) => {
+    private zip_reuse_queue = (p: DeflateBuffer) => {
         p.next = this.zip_free_queue;
         this.zip_free_queue = p;
     }
@@ -1062,8 +1062,8 @@ export default class OriginalZip {
         }
     }
 
-    private zip_build_tree = (desc: zip_DeflateTreeDesc) => { // the tree descriptor
-        let tree: Array<zip_DeflateCT> = desc.dyn_tree;
+    private zip_build_tree = (desc: DeflateTreeDesc) => { // the tree descriptor
+        let tree: Array<DeflateCT> = desc.dyn_tree;
         let stree = desc.static_tree;
         let elems = desc.elems;
         let max_code = -1;	// largest code with non zero frequency
@@ -1127,7 +1127,7 @@ export default class OriginalZip {
      * @param tree the tree to restore.
      * @param k node to move down.
      */
-    private zip_pqdownheap = (tree: Array<zip_DeflateCT>, k: number) => {
+    private zip_pqdownheap = (tree: Array<DeflateCT>, k: number) => {
         let v = this.zip_heap[k];
         let j = k << 1;	// left son of k
 
@@ -1150,12 +1150,12 @@ export default class OriginalZip {
         this.zip_heap[k] = v;
     }
 
-    private zip_SMALLER = (tree: Array<zip_DeflateCT>, n: number, m: number): boolean => {
+    private zip_SMALLER = (tree: Array<DeflateCT>, n: number, m: number): boolean => {
         return tree[n].fc < tree[m].fc ||
             (tree[n].fc == tree[m].fc && this.zip_depth[n] <= this.zip_depth[m]);
     }
 
-    private zip_gen_bitlen = (desc: zip_DeflateTreeDesc) => { // the tree descriptor
+    private zip_gen_bitlen = (desc: DeflateTreeDesc) => { // the tree descriptor
 
         const tree = desc.dyn_tree;
         const extra = desc.extra_bits;
@@ -1257,7 +1257,7 @@ export default class OriginalZip {
      * @param tree the tree to be scanned.
      * @param max_code and its largest code of non zero frequency.
      */
-    private zip_scan_tree(tree: Array<zip_DeflateCT>, max_code: number) {
+    private zip_scan_tree(tree: Array<DeflateCT>, max_code: number) {
 
         let max_count = 7;		// max repeat count
         let min_count = 4;		// min repeat count
