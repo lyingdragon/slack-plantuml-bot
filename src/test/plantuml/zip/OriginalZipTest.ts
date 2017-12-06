@@ -1,10 +1,10 @@
-import Zip from '../../../main/plantuml/zip/OriginalZip';
+import OriginalZip from '../../../main/plantuml/zip/OriginalZip';
 
 describe('Zip(PlantUMLサイトで使ってるライブラリ)のテスト', () => {
-    let sut: Zip;
+    let sut: OriginalZip;
 
     beforeEach(() => {
-        sut = new Zip();
+        sut = new OriginalZip();
     });
 
     describe('deflateのテスト', () => {
