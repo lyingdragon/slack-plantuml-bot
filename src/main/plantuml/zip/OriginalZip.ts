@@ -456,7 +456,7 @@ export default class OriginalZip {
             const in_length = this.strstart - this.block_start;
 
             for (let dcode = 0; dcode < Constant.D_CODES; dcode++) {
-                out_length += this.dyn_dtree[dcode].fc * (5 + Constant.extra_dbits[dcode]);
+                out_length += this.dyn_dtree[dcode].fc * (5 + Constant.EXTRA_D_BITS[dcode]);
             }
             out_length >>= 3;
             if (this.last_dist < (this.last_lit / 2) && out_length < (in_length / 2)) return true;
@@ -480,7 +480,7 @@ export default class OriginalZip {
         const lDesc: DeflateTreeDesc = this.l_desc;
         lDesc.dyn_tree = this.dyn_ltree;
         lDesc.static_tree = this.static_ltree;
-        lDesc.extra_bits = Constant.extra_lbits;
+        lDesc.extra_bits = Constant.EXTRA_L_BITS;
         lDesc.extra_base = Constant.LITERALS + 1;
         lDesc.elems = Constant.L_CODES;
         lDesc.max_length = Constant.MAX_BITS;
@@ -488,7 +488,7 @@ export default class OriginalZip {
 
         this.d_desc.dyn_tree = this.dyn_dtree;
         this.d_desc.static_tree = this.static_dtree;
-        this.d_desc.extra_bits = Constant.extra_dbits;
+        this.d_desc.extra_bits = Constant.EXTRA_D_BITS;
         this.d_desc.extra_base = 0;
         this.d_desc.elems = Constant.D_CODES;
         this.d_desc.max_length = Constant.MAX_BITS;
@@ -496,7 +496,7 @@ export default class OriginalZip {
 
         this.bl_desc.dyn_tree = this.bl_tree;
         this.bl_desc.static_tree = null;
-        this.bl_desc.extra_bits = Constant.extra_blbits;
+        this.bl_desc.extra_bits = Constant.EXTRA_BL_BITS;
         this.bl_desc.extra_base = 0;
         this.bl_desc.elems = Constant.BL_CODES;
         this.bl_desc.max_length = Constant.MAX_BL_BITS;
@@ -505,7 +505,7 @@ export default class OriginalZip {
         let length = 0;
         for (code = 0; code < Constant.LENGTH_CODES - 1; code++) {
             this.base_length[code] = length;
-            for (let n = 0; n < (1 << Constant.extra_lbits[code]); n++)
+            for (let n = 0; n < (1 << Constant.EXTRA_L_BITS[code]); n++)
                 this.length_code[length++] = code;
         }
         this.length_code[length - 1] = code;
@@ -513,14 +513,14 @@ export default class OriginalZip {
         dist = 0;
         for (code = 0; code < 16; code++) {
             this.base_dist[code] = dist;
-            for (let n = 0; n < (1 << Constant.extra_dbits[code]); n++) {
+            for (let n = 0; n < (1 << Constant.EXTRA_D_BITS[code]); n++) {
                 this.dist_code[dist++] = code;
             }
         }
         dist >>= 7; // from now on, all distances are divided by 128
         for (; code < Constant.D_CODES; code++) {
             this.base_dist[code] = dist << 7;
-            for (let n = 0; n < (1 << (Constant.extra_dbits[code] - 7)); n++)
+            for (let n = 0; n < (1 << (Constant.EXTRA_D_BITS[code] - 7)); n++)
                 this.dist_code[256 + dist++] = code;
         }
 
@@ -710,7 +710,7 @@ export default class OriginalZip {
             } else {
                 code = this.length_code[lc];
                 this.SEND_CODE(code + Constant.LITERALS + 1, ltree); // send the length code
-                extra = Constant.extra_lbits[code];
+                extra = Constant.EXTRA_L_BITS[code];
                 if (extra != 0) {
                     lc -= this.base_length[code];
 
@@ -720,7 +720,7 @@ export default class OriginalZip {
                 dist = this.d_buf[dx++];
                 code = this.D_CODE(dist);
                 this.SEND_CODE(code, dtree);	  // send the distance code
-                extra = Constant.extra_dbits[code];
+                extra = Constant.EXTRA_D_BITS[code];
                 if (extra != 0) {
                     dist -= this.base_dist[code];
 
@@ -760,7 +760,7 @@ export default class OriginalZip {
         this.send_bits(dcodes - 1, 5);
         this.send_bits(blcodes - 4, 4); // not -3 as stated in appnote.txt
         for (let rank = 0; rank < blcodes; rank++) {
-            this.send_bits(this.bl_tree[Constant.bl_order[rank]].dl, 3);
+            this.send_bits(this.bl_tree[Constant.BL_ORDER[rank]].dl, 3);
         }
         this.send_tree(this.dyn_ltree, lcodes - 1);
         this.send_tree(this.dyn_dtree, dcodes - 1);
@@ -855,7 +855,7 @@ export default class OriginalZip {
         for (let j = 0; j < Constant.HASH_SIZE; j++)
             this.prev[Constant.WSIZE + j] = 0;
 
-        const tableItem = Constant.configuration_table[this.compr_level];
+        const tableItem = Constant.CONFIGURATION_TABLE[this.compr_level];
         this.max_lazy_match = tableItem.max_lazy;
         this.good_match = tableItem.good_length;
         if (!Constant.FULL_SEARCH) this.nice_match = tableItem.nice_length;
@@ -1107,7 +1107,7 @@ export default class OriginalZip {
         for (max_blindex = Constant.BL_CODES - 1; max_blindex >= 3; max_blindex--) {
 
 
-            if (this.bl_tree[Constant.bl_order[max_blindex]].dl != 0) break;
+            if (this.bl_tree[Constant.BL_ORDER[max_blindex]].dl != 0) break;
         }
         this.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
 
