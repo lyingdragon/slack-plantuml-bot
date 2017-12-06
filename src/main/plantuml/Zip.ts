@@ -216,9 +216,7 @@ export default class Zip {
         let out = "";
         let i;
         while ((i = this.zip_deflate_internal(buff, 0, buff.length)) > 0) {
-            console.info("zip_deflate:while,i=" + i);
             for (let j = 0; j < i; j++) {
-                console.info("zip_deflate:for,j=" + j);
                 out += String.fromCharCode(buff[j]);
             }
         }
@@ -275,10 +273,6 @@ export default class Zip {
     private zip_deflate_internal = (buff: Array<number>, off: number, buff_size: number): number => {
         let n;
 
-        console.info('zip_deflate_internal:buff:' + buff);
-        console.info('zip_deflate_internal:off:' + off);
-        console.info('zip_deflate_internal:buff_size:' + buff_size);
-        console.info('zip_deflate_internalの最初のzip_outcnt:' + this.zip_outcnt);
 
         if (!this.zip_initflag) {
             this.zip_init_deflate();
@@ -292,8 +286,6 @@ export default class Zip {
         if ((n = this.zip_qcopy(buff, off, buff_size)) == buff_size)
             return buff_size;
 
-        console.info('中盤のn:' + n);
-        console.info('zip_deflate_internalの中盤のzip_outcnt:' + this.zip_outcnt);
 
         if (this.zip_complete) return n;
 
@@ -302,7 +294,6 @@ export default class Zip {
         else
             this.zip_deflate_better();
 
-        console.info('zip_deflate_internalの中盤2のzip_outcnt:' + this.zip_outcnt);
 
         if (this.zip_lookahead == 0) {
             if (this.zip_match_available != 0)
@@ -311,8 +302,6 @@ export default class Zip {
             this.zip_complete = true;
         }
 
-        console.info('終盤のn:' + n);
-        console.info('zip_deflate_internalの終盤のzip_outcnt:' + this.zip_outcnt);
 
         return n + this.zip_qcopy(buff, n + off, buff_size - n);
     }
@@ -345,7 +334,6 @@ export default class Zip {
         let i: number;
         let j: number;
 
-        console.info('zip_qcopy最初のzip_outcnt:' + this.zip_outcnt);
 
         n = 0;
         while (this.zip_qhead != null && n < buff_size) {
@@ -374,9 +362,6 @@ export default class Zip {
             if (i > this.zip_outcnt - this.zip_outoff)
                 i = this.zip_outcnt - this.zip_outoff;
 
-            console.info('zip_qcopy途中のzip_outcnt:' + this.zip_outcnt);
-            console.info('zip_qcopy途中のzip_outoff:' + this.zip_outoff);
-            console.info('zip_qcopy途中のi:' + i);
 
             // System.arraycopy(outbuf, outoff, buff, off + n, i);
             for (j = 0; j < i; j++)
@@ -385,10 +370,8 @@ export default class Zip {
             n += i;
             if (this.zip_outcnt == this.zip_outoff) {
                 this.zip_outcnt = this.zip_outoff = 0;
-                console.info('zip_qcopyの最後のIF文のzip_outcnt:' + this.zip_outcnt);
             }
         }
-        console.info('zip_qcopyの最後のn:' + n);
         return n;
     }
 
@@ -583,13 +566,9 @@ export default class Zip {
      */
     private zip_ct_tally = (dist: number, lc: number) => {
 
-        console.info("zip_ct_tally(" + dist + "," + lc + ")");
-        console.info("zip_ct_tally開始時:" + this.zip_outcnt);
-        console.info("zip_ct_tally開始時のzip_last_lit:" + this.zip_last_lit);
         
         this.zip_l_buf[this.zip_last_lit++] = lc;
 
-console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
 
         if (dist == 0) {
             this.zip_dyn_ltree[lc].fc++;
@@ -746,20 +725,16 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
      */
     private zip_flush_block = (eof: number) => {
 
-        console.info("zip_flush_block開始時:" + this.zip_outcnt);
-        console.info("eof:" + eof);
         
         let stored_len = this.zip_strstart - this.zip_block_start;	// length of input block
         this.zip_flag_buf[this.zip_last_flags] = this.zip_flags; // Save the flags for the last 8 items
 
-        console.info("zip_flush_block開始時のstored_len:" + stored_len);	
 
         this.zip_build_tree(this.zip_l_desc);
         this.zip_build_tree(this.zip_d_desc);
 
         const max_blindex = this.zip_build_bl_tree(); // index of last bit length code of non zero freq
 
-        console.info("zip_flush_block()の中盤のmax_blindex:" + max_blindex);
         
         let opt_lenb = (this.zip_opt_len + 3 + 7) >> 3;
         const static_lenb = (this.zip_static_len + 3 + 7) >> 3; // opt_len and static_len in bytes
@@ -772,21 +747,17 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
 
             this.zip_send_bits((this.zip_STORED_BLOCK << 1) + eof, 3);  /* send block type */
             this.zip_bi_windup();		 /* align on byte boundary */
-            console.info("ひとつ目のzip_put_shortに入る前のstored_len:" + stored_len);
             this.zip_put_short(stored_len);
-            console.info("ひとつ目のzip_put_shortに入る前のstored_len:" + stored_len);
             this.zip_put_short(~stored_len);
 
             for (i = 0; i < stored_len; i++)
                 this.zip_put_byte(this.zip_window[this.zip_block_start + i]);
 
         } else if (static_lenb == opt_lenb) {
-            console.info("IFの中 static_lenb == opt_lenb");
             this.zip_send_bits((this.zip_STATIC_TREES << 1) + eof, 3);
             this.zip_compress_block(this.zip_static_ltree, this.zip_static_dtree);
         } else {
 
-            console.log("else側のzip_send_bits()");
             
             this.zip_send_bits((this.zip_DYN_TREES << 1) + eof, 3);
             this.zip_send_all_trees(this.zip_l_desc.max_code + 1,
@@ -807,7 +778,6 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
      */
     private zip_send_bits = (value: number, length: number) => {
 
-        console.info("zip_send_bits(" + value + "," + length + ")");
 
         const BUF_SIZE = 16; // bit size of bi_buf
         if (this.zip_bi_valid > BUF_SIZE - length) {
@@ -833,13 +803,11 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
 
     private zip_put_short = (w: number) => {
 
-        console.info("zip_put_short開始時:" + this.zip_outcnt + ",引数:" + w);
 
         w &= 0xffff;
         if (this.zip_outoff + this.zip_outcnt < this.zip_OUTBUFSIZ - 2) {
             this.zip_outbuf[this.zip_outoff + this.zip_outcnt++] = (w & 0xff);
             this.zip_outbuf[this.zip_outoff + this.zip_outcnt++] = (w >>> 8);
-            console.info('zip_put_shotのzip_outcnt:' + this.zip_outcnt);
         } else {
             this.zip_put_byte(w & 0xff);
             this.zip_put_byte(w >>> 8);
@@ -872,11 +840,9 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
             if ((lx & 7) == 0)
                 flag = this.zip_flag_buf[fx++];
 
-// console.info("zip_compress_block()の始めの方の zip_l_buf[]:" + this.zip_l_buf);
                 
             lc = this.zip_l_buf[lx++] & 0xff;
             if ((flag & 1) == 0) {
-                console.info("zip_compress_block()のひとつ目のIF、lc:" + lc);
                 this.zip_SEND_CODE(lc, ltree); /* send a literal byte */
             } else {
                 code = this.zip_length_code[lc];
@@ -885,7 +851,6 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
                 if (extra != 0) {
                     lc -= this.zip_base_length[code];
 
-                    console.log("zip_compress_block()の中盤、一つ目のzip_send_bits(lc=" + lc + ",extr=" + extra + ")");
 
                     this.zip_send_bits(lc, extra); // send the extra length bits
                 }
@@ -896,7 +861,6 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
                 if (extra != 0) {
                     dist -= this.zip_base_dist[code];
 
-                    console.log("zip_compress_block()の終盤、２つ目のzip_send_bits(lc=" + lc + ",extr=" + extra + ")");
                     
                     this.zip_send_bits(dist, extra);   // send the extra distance bits
                 }
@@ -908,7 +872,6 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
     }
 
     private zip_SEND_CODE = (c: number, tree: Array<zip_DeflateCT>) => {
-        console.info("zip_SEND_CODE開始時:c=" + c);
         this.zip_send_bits(tree[c].fc, tree[c].dl);
     }
 
@@ -929,7 +892,6 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
 
     private zip_send_all_trees = (lcodes: number, dcodes: number, blcodes: number) => { // number of codes for each tree
         
-        console.info("zip_send_all_trees()開始時");
         
         this.zip_send_bits(lcodes - 257, 5); // not +255 as stated in appnote.txt
         this.zip_send_bits(dcodes - 1, 5);
@@ -974,15 +936,12 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
                 }
                 // Assert(count >= 3 && count <= 6, " 3_6?");
                 this.zip_SEND_CODE(this.zip_REP_3_6, this.zip_bl_tree);
-                console.info("zip_send_tree()内、1つ目のzip_send_bits()呼び出し");
                 this.zip_send_bits(count - 3, 2);
             } else if (count <= 10) {
                 this.zip_SEND_CODE(this.zip_REPZ_3_10, this.zip_bl_tree);
-                console.info("zip_send_tree()内、2つ目のzip_send_bits()呼び出し");
                 this.zip_send_bits(count - 3, 3);
             } else {
                 this.zip_SEND_CODE(this.zip_REPZ_11_138, this.zip_bl_tree);
-                console.info("zip_send_tree()内、3つ目のzip_send_bits()呼び出し");
                 this.zip_send_bits(count - 11, 7);
             }
             count = 0;
@@ -1010,7 +969,6 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
             for (let i = 0; i < q.len; i++)
                 q.ptr[i] = this.zip_outbuf[this.zip_outoff + i];
             this.zip_outcnt = this.zip_outoff = 0;
-            console.info('zip_qoutbufのzip_outcnt:' + this.zip_outcnt);
         }
     }
 
@@ -1285,13 +1243,11 @@ console.info("zip_ct_tally()の最初のzip_l_buf[]:" + this.zip_l_buf);
         let max_blindex: number;
         for (max_blindex = this.zip_BL_CODES - 1; max_blindex >= 3; max_blindex--) {
 
-            console.info("zip_build_bl_treeのループのmax_blindex:" + max_blindex);
 
             if (this.zip_bl_tree[this.zip_bl_order[max_blindex]].dl != 0) break;
         }
         this.zip_opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
 
-        console.info("zip_build_bl_treeの最後のmax_blindex:" + max_blindex);
 
         return max_blindex;
     }
