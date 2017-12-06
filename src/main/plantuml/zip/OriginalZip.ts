@@ -836,12 +836,10 @@ export default class OriginalZip {
     }
 
     private new_queue = (): DeflateBuffer => {
-        let p: DeflateBuffer;
+        let p  = new DeflateBuffer();
         if (this.free_queue != null) {
             p = this.free_queue;
             this.free_queue = this.free_queue.next;
-        } else {
-            p = new DeflateBuffer();
         }
         p.next = null;
         p.len = 0;
