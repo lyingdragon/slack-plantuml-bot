@@ -1,4 +1,4 @@
-import Zip from '../../main/plantuml/Zip';
+import Zip from '../../../main/plantuml/zip/OriginalZip';
 
 describe('Zip(PlantUMLサイトで使ってるライブラリ)のテスト', () => {
     let sut: Zip;

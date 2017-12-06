@@ -82,7 +82,7 @@ class zip_DeflateConfiguration {
 
 }
 
-export default class Zip {
+export default class OriginalZip {
 
     /* constant parameters */
     private readonly DEFAULT_LEVEL: number = 6;
