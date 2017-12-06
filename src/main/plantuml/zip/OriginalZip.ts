@@ -1,87 +1,11 @@
-// http://s.plantuml.com/synchro.js のTypeScriptへの移植。
+import DeflateCT from './DeflateCT';
+import DeflateBuffer from './DeflateBuffer';
+import DeflateTreeDesc from './DeflateTreeDesc';
+import DeflateConfiguration from './DeflateConfiguration';
 
-class DeflateCT {
-
-    private _fc: number;
-    private _dl: number;
-
-    constructor() {
-        this._fc = 0; // frequency count or bit string
-        this._dl = 0; // father node in Huffman tree or length of bit string
-    }
-
-    get fc(): number {
-        return this._fc;
-    }
-    get dl(): number {
-        return this._dl;
-    }
-    set fc(value: number) {
-        this._fc = value;
-    }
-    set dl(value: number) {
-        this._dl = value;
-    }
-
-}
-
-class DeflateBuffer {
-
-    private _next: DeflateBuffer | null = null;
-    private _len: number = 0;
-    private _ptr = new Array(1024 * 8);
-    private _off: number = 0;
-
-    get next(): DeflateBuffer | null {
-        return this._next;
-    }
-    get len(): number {
-        return this._len;
-    }
-    get ptr() {
-        return this._ptr;
-    }
-    get off(): number {
-        return this._off;
-    }
-
-    set next(value: DeflateBuffer | null) {
-        this._next = value;
-    }
-    set len(value: number) {
-        this._len = value;
-    }
-    set off(value: number) {
-        this._off = value;
-    }
-
-}
-
-class DeflateTreeDesc {
-    public dyn_tree: Array<DeflateCT>;	// the dynamic tree
-    public static_tree: Array<DeflateCT> | null;	// corresponding static tree or NULL
-    public extra_bits: Array<number>;	// extra bits for each code or NULL
-    public extra_base = 0;	// base index for extra_bits
-    public elems = 0;		// max number of elements in the tree
-    public max_length = 0;	// max bit length for the codes
-    public max_code = 0;		// largest code with non zero frequency
-}
-
-class DeflateConfiguration {
-    public readonly max_chain: number; // reduce lazy search above this match length
-    public readonly nice_length: number; // do not perform lazy search above this match length
-    public readonly max_lazy: number; // quit search above this match length
-    public readonly good_length: number;
-
-    constructor(a: number, b: number, c: number, d: number) {
-        this.good_length = a;
-        this.max_lazy = b;
-        this.nice_length = c;
-        this.max_chain = d;
-    }
-
-}
-
+/**
+ * http://s.plantuml.com/synchro.js の関数群をTypeScriptへの移植。
+ */
 export default class OriginalZip {
 
     /* constant parameters */
