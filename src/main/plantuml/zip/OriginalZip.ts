@@ -26,7 +26,6 @@ export default class OriginalZip {
     private block_start: number;
     private ins_h: number;
     private hash_head: number;
-    private prev_match: number;  // TODO 在るメソッドでしか使ってない疑惑(method privateに出来そう)
     private match_available: number;
     private match_length: number;
     private prev_length: number;
@@ -367,8 +366,9 @@ export default class OriginalZip {
         while (this.lookahead != 0 && this.qhead == null) {
             this.INSERT_STRING();
 
+            const prev_match = this.match_start;
+
             this.prev_length = this.match_length;
-            this.prev_match = this.match_start;
             this.match_length = Constant.MIN_MATCH - 1;
 
             if (this.hash_head != Constant.NIL &&
@@ -388,7 +388,7 @@ export default class OriginalZip {
                 this.match_length <= this.prev_length) {
                 let flush; // set if current block must be flushed
 
-                flush = this.ct_tally(this.strstart - 1 - this.prev_match,
+                flush = this.ct_tally(this.strstart - 1 - prev_match,
                     this.prev_length - Constant.MIN_MATCH);
 
                 this.lookahead -= this.prev_length - 1;
