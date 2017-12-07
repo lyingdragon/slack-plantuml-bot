@@ -6,13 +6,13 @@ export default class OriginalEncoder {
     public encode64(data: string) {
         let r: string = '';
         for (let i = 0; i < data.length; i += 3) {
-            let codes: number[] = [0, 0, 0];
-            if (i == data.length - 2) {
-                codes = [data.charCodeAt(i), data.charCodeAt(i + 1), 0];
-            } else if (i == data.length - 1) {
-                codes = [data.charCodeAt(i), 0, 0];
+            let codes: number[] = [data.charCodeAt(i), 0, 0];
+            if (i == data.length - 1) {
+            } else if (i == data.length - 2) {
+                codes[1] = data.charCodeAt(i + 1);
             } else {
-                codes = [data.charCodeAt(i), data.charCodeAt(i + 1), data.charCodeAt(i + 2)];
+                codes[1] = data.charCodeAt(i + 1);
+                codes[2] = data.charCodeAt(i + 2);
             }
             r += this.append3bytes(codes);
         }
