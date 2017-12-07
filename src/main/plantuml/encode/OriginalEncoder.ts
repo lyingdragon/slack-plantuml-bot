@@ -7,7 +7,7 @@ export default class OriginalEncoder {
         let result: string = '';
         for (let i = 0; i < data.length; i += 3) {
             const max = (i < data.length) ? data.length - i : 3;
-            let codes = [0, 0, 0];
+            let codes = Array<number>(3);
             for (let j = 0; j < max; j++) {
                 codes[j] = data.charCodeAt(i + j);
             }
@@ -30,15 +30,16 @@ export default class OriginalEncoder {
         return result;
     }
 
-    private encode6bit(b: number) {
-        if (b < 10) return String.fromCharCode(48 + b);
-        b -= 10;
-        if (b < 26) return String.fromCharCode(65 + b);
-        b -= 26;
-        if (b < 26) return String.fromCharCode(97 + b);
-        b -= 26;
-        if (b == 0) return '-';
-        if (b == 1) return '_';
+    private encode6bit(baseCode: number) {
+        let code = baseCode;
+        if (code < 10) return String.fromCharCode(48 + code);
+        code -= 10;
+        if (code < 26) return String.fromCharCode(65 + code);
+        code -= 26;
+        if (code < 26) return String.fromCharCode(97 + code);
+        code -= 26;
+        if (code == 0) return '-';
+        if (code == 1) return '_';
         return '?';
     }
 }
