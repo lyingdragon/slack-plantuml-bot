@@ -5,11 +5,11 @@ describe('PlantUMLサイトのURLを作成するテスト', () => {
 
     describe('generate()のテスト', () => {
         test('指定した「PlantUMLのUML構文」から、サーバに図形を要求するURLを作成できる。', () => {
-            const parameter: string = "@startuml\nclass test\n@enduml";
+            const parameter: string = "@startuml\nclass 日本語\n@enduml";
 
             const actual = new PlantUmlServerUrl(parameter).generate();
 
-            const expected = 'SoWkIImgAStDuKhEIImkLdWsVUcpEMjUh9h7vP2Qbm8K1m00';
+            const expected = 'http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLdWsVUcpEMjUh9h7vP2Qbm8K1m00';
             expect(actual).toContain(expected);
         })
     });
