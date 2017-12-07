@@ -1,6 +1,7 @@
 import DeflateConfiguration from './DeflateConfiguration';
 
 export default class Constant {
+
     /* constant parameters */
     public static readonly DEFAULT_LEVEL: number = 6;
     public static readonly WSIZE: number = 32768;		// Sliding Window size
@@ -43,7 +44,6 @@ export default class Constant {
     public static readonly REPZ_11_138: number = 18;
     public static readonly HEAP_SIZE: number = 2 * Constant.L_CODES + 1;
     public static readonly H_SHIFT: number = (Constant.HASH_BITS + Constant.MIN_MATCH - 1) / Constant.MIN_MATCH;
-
 
     /* constant tables */
     public static readonly EXTRA_L_BITS = new Array(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0);

@@ -156,15 +156,12 @@ export default class OriginalZip {
         else
             this.deflate_better();
 
-
         if (this.lookahead == 0) {
             if (this.match_available != 0)
                 this.ct_tally(0, this.window[this.strstart - 1] & 0xff);
             this.flush_block(1);
             this.complete = true;
         }
-
-
         return n + this.qcopy(buff, n + off, buff_size - n);
     }
 
@@ -195,7 +192,6 @@ export default class OriginalZip {
         let n: number;
         let i: number;
         let j: number;
-
 
         n = 0;
         while (this.qhead != null && n < buff_size) {
@@ -836,7 +832,7 @@ export default class OriginalZip {
     }
 
     private new_queue = (): DeflateBuffer => {
-        let p  = new DeflateBuffer();
+        let p = new DeflateBuffer();
         if (this.free_queue != null) {
             p = this.free_queue;
             this.free_queue = this.free_queue.next;
@@ -1103,13 +1099,9 @@ export default class OriginalZip {
         this.build_tree(this.bl_desc);
         let max_blindex: number;
         for (max_blindex = Constant.BL_CODES - 1; max_blindex >= 3; max_blindex--) {
-
-
             if (this.bl_tree[Constant.BL_ORDER[max_blindex]].dl != 0) break;
         }
         this.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
-
-
         return max_blindex;
     }
 
