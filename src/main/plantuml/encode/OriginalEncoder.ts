@@ -4,32 +4,30 @@
 export default class OriginalEncoder {
 
     public encode64(data: string) {
-        let r: string = '';
+        let result: string = '';
         for (let i = 0; i < data.length; i += 3) {
-            let codes: number[] = [data.charCodeAt(i), 0, 0];
-            if (i == data.length - 1) {
-            } else if (i == data.length - 2) {
-                codes[1] = data.charCodeAt(i + 1);
-            } else {
-                codes[1] = data.charCodeAt(i + 1);
-                codes[2] = data.charCodeAt(i + 2);
+            const max = (i < data.length) ? data.length - i : 3;
+            let codes = [0, 0, 0];
+            for (let j = 0; j < max; j++) {
+                codes[j] = data.charCodeAt(i + j);
             }
-            r += this.append3bytes(codes);
+            result += this.append3bytes(codes);
         }
-        return r;
+        return result;
     }
 
     private append3bytes(codes: number[]) {
-        const c1 = codes[0] >> 2;
-        const c2 = ((codes[0] & 0x3) << 4) | (codes[1] >> 4);
-        const c3 = ((codes[1] & 0xF) << 2) | (codes[2] >> 6);
-        const c4 = codes[2] & 0x3F;
-        let r = "";
-        r += this.encode6bit(c1 & 0x3F);
-        r += this.encode6bit(c2 & 0x3F);
-        r += this.encode6bit(c3 & 0x3F);
-        r += this.encode6bit(c4 & 0x3F);
-        return r;
+        let bitArray: number[] = [
+            codes[0] >> 2,
+            ((codes[0] & 0x3) << 4) | (codes[1] >> 4),
+            ((codes[1] & 0xF) << 2) | (codes[2] >> 6),
+            codes[2] & 0x3F
+        ];
+        let result = '';
+        for (let i = 0; i < bitArray.length; i++) {
+            result += this.encode6bit(bitArray[i] & 0x3F);
+        }
+        return result;
     }
 
     private encode6bit(b: number) {
