@@ -1,9 +1,5 @@
 import { SlackController, SlackBot, SlackMessage } from 'botkit';
-
-import * as querystring from 'querystring';
-import * as iconv from 'iconv-lite';
-import OriginalZip from '../plantuml/zip/OriginalZip'
-import OriginalEncoder from '../plantuml/encode/OriginalEncoder'
+import PlantUmlServerUrl from '../plantuml/PlantUmlServerUrl'
 
 export default class EchoEvent {
     private readonly controller: SlackController;
@@ -21,18 +17,7 @@ export default class EchoEvent {
     }
 
     private umlUrl(messageText: string): string {
-        const encoded: string = encodeURIComponent(messageText);
-        console.debug('encode:' + encoded);
-        const decoded: string = querystring.unescape(encoded);
-        const charsetConverted = iconv.decode(Buffer.from(decoded, 'UTF-8'), 'ISO-8859-1');
-        console.debug('charsetConverted:' + charsetConverted);
-        let deflated: string = new OriginalZip().deflate(charsetConverted, 9);
-        console.debug('deflated:' + deflated);
-        const encoder = new OriginalEncoder();
-        const result: string = encoder.encode64(deflated);
-        console.debug('result:' + result);
-
-        return result;
+        return new PlantUmlServerUrl(messageText).generate();
     }
 
 }
