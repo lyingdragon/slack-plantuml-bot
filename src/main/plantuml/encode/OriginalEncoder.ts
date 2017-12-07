@@ -4,24 +4,26 @@
 export default class OriginalEncoder {
 
     public encode64(data: string) {
-        let r: string = "";
+        let r: string = '';
         for (let i = 0; i < data.length; i += 3) {
-            if (i + 2 == data.length) {
-                r += this.append3bytes(data.charCodeAt(i), data.charCodeAt(i + 1), 0);
-            } else if (i + 1 == data.length) {
-                r += this.append3bytes(data.charCodeAt(i), 0, 0);
+            let codes: number[] = [0, 0, 0];
+            if (i == data.length - 2) {
+                codes = [data.charCodeAt(i), data.charCodeAt(i + 1), 0];
+            } else if (i == data.length - 1) {
+                codes = [data.charCodeAt(i), 0, 0];
             } else {
-                r += this.append3bytes(data.charCodeAt(i), data.charCodeAt(i + 1), data.charCodeAt(i + 2));
+                codes = [data.charCodeAt(i), data.charCodeAt(i + 1), data.charCodeAt(i + 2)];
             }
+            r += this.append3bytes(codes);
         }
         return r;
     }
 
-    private append3bytes(b1: number, b2: number, b3: number) {
-        const c1 = b1 >> 2;
-        const c2 = ((b1 & 0x3) << 4) | (b2 >> 4);
-        const c3 = ((b2 & 0xF) << 2) | (b3 >> 6);
-        const c4 = b3 & 0x3F;
+    private append3bytes(codes: number[]) {
+        const c1 = codes[0] >> 2;
+        const c2 = ((codes[0] & 0x3) << 4) | (codes[1] >> 4);
+        const c3 = ((codes[1] & 0xF) << 2) | (codes[2] >> 6);
+        const c4 = codes[2] & 0x3F;
         let r = "";
         r += this.encode6bit(c1 & 0x3F);
         r += this.encode6bit(c2 & 0x3F);
