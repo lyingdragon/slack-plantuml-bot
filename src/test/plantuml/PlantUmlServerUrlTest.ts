@@ -1,4 +1,5 @@
 import PlantUmlServerUrl from '../../main/plantuml/PlantUmlServerUrl';
+import { access } from 'fs';
 
 describe('PlantUMLサイトのURLを作成するテスト', () => {
 
@@ -10,6 +11,56 @@ describe('PlantUMLサイトのURLを作成するテスト', () => {
 
             const expected = 'http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLdWsVUcpEMjUh9h7vP2Qbm8K1m00';
             expect(actual).toContain(expected);
+        })
+    });
+
+    describe('nomarize()のテスト', () => {
+        test('両脇のUML宣言があった場合、削除する', () => {
+            const parameter: string = "@startuml\nclass 日本語\n@enduml";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual('class 日本語');
+        })
+
+        test('前にUML宣言があり、その前にも文字列があった場合、削除する', () => {
+            const parameter: string = "前にある不必要と思しき文字列\n@startuml\nclass 日本語";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual('class 日本語');
+        })
+
+        test('後ろにUML宣言があり、その後にも文字列があった場合、削除する', () => {
+            const parameter: string = "class 日本語@enduml\n後ろにある不必要と思しき文字列";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual('class 日本語');
+        })
+
+        test('空白やタブで作られている文字列は、空文字に変換する', () => {
+            const parameter: string = " \t \t";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual('');
+        })
+
+        test('空白と、前後に改行が連打されていたとしても、空文字に変換する', () => {
+            const parameter: string = "\n\n\n  \n\n\n";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual('');
+        })
+
+        test('UML宣言に大文字小文字が混在していたとしても、削除する', () => {
+            const parameter: string = "前\n@StArTuMl\n\n\nclass Test\n\n@eNdUmL\n後";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual("class Test");
         })
     });
 
