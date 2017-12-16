@@ -77,6 +77,14 @@ describe('PlantUMLサイトのURLを作成するテスト', () => {
 
             expect(actual).toEqual("class Test {\n  - fielad\n  + method()\n}\nTest -- Parent");
         })
+
+        test('Slack上で「スペシャルキャラクタに変換されて送られてくる」ものは、復号する', () => {
+            const parameter: string = "Figure &lt;|- Rect : 汎化\nRect -|&gt; Parent";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual("Figure <|- Rect : 汎化\nRect -|> Parent");
+        })
     });
 
 });

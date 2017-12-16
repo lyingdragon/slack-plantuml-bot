@@ -34,7 +34,8 @@ export default class PlantUmlServerUrl {
     normalize(): string {
         const trimed = this.umlText.trim();
         if (trimed.length === 0) return '';
-        const crEscape = trimed.replace(/\n/g, '<cr>');
+        const removeSc = trimed.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        const crEscape = removeSc.replace(/\n/g, '<cr>');
         const frontCut = crEscape.replace(/^.*@startuml/i, '').trimLeft();
         const endCut = frontCut.replace(/@enduml.*$/i, '').trimRight();
         const removeCodeGraph = endCut.replace(/```/g, '');
