@@ -9,7 +9,9 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack -w",
-    "test": "jest --no-cache"
+    "test": "jest --no-cache",
+    "docker-build": "cp ./build/bundle.js ./dockernize/slack-plantuml-bot.js && docker build -t $npm_package_name:$npm_package_version ./dockernize",
+    "test-dump": "echo $npm_package_version"
   },
   "repository": {
     "type": "git",
