@@ -1,5 +1,4 @@
 import PlantUmlServerUrl from '../../main/plantuml/PlantUmlServerUrl';
-import { access } from 'fs';
 
 describe('PlantUMLサイトのURLを作成するテスト', () => {
 

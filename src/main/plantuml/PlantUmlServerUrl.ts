@@ -2,8 +2,6 @@ import * as querystring from 'querystring';
 import * as iconv from 'iconv-lite';
 import OriginalZip from './zip/OriginalZip'
 import OriginalEncoder from './encode/OriginalEncoder'
-import { normalize } from 'path';
-import { triggerAsyncId } from 'async_hooks';
 
 export default class PlantUmlServerUrl {
 
