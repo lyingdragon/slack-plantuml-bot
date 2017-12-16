@@ -10,10 +10,15 @@ export default class PlantUmlTextWritedEvent {
 
     public register() {
         const controller: SlackController = this.controller;
-        controller.hears(['.*'], 'direct_message,direct_mention,mention', (bot: SlackBot, message: SlackMessage) => {
-            if (message.text == undefined) return bot.reply(message, '力及ばず…UML図に変換できませんでした。');
-            bot.reply(message, this.umlUrl(message.text));
-        });
+        controller.hears([/.*/], 'direct_message,direct_mention,mention', this.messageAnalyzeAndReply);
+        controller.hears([/@startuml/i], 'ambient', this.messageAnalyzeAndReply);
+    }
+
+    private messageAnalyzeAndReply = (bot: SlackBot, message: SlackMessage) => {
+        if (message.text == undefined) return;
+        const replyUrl = this.umlUrl(message.text);
+        if (replyUrl.length == 0) return;
+        bot.reply(message, replyUrl);
     }
 
     private umlUrl(messageText: string): string {
