@@ -61,6 +61,14 @@ describe('PlantUMLサイトのURLを作成するテスト', () => {
 
             expect(actual).toEqual("class Test");
         })
+
+        test('二行以上からなるUMLテキストはそのままとなる', () => {
+            const parameter: string = "class Test\nclass Bar";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual("class Test\nclass Bar");
+        })
     });
 
 });
