@@ -9,9 +9,8 @@ build:
                 echo "node version $(node -v) running"
                 echo "npm version $(npm -v) running"
     after-steps:
-        - sherzberg/slack-notify:
-            subdomain: k-and-m
-            token: $SLACK_TOKEN
-            channel: "#kazuhitos-activities"
+        - slack-notifier:
+            url: $SLACK_URL
+            channel: ci-build
             username: wercker
-            icon_url: https://avatars3.githubusercontent.com/u/1695193?s=140
+            branch: master
