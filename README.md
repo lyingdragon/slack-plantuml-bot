@@ -26,7 +26,7 @@ SLACK_BOT_TOKEN=[your slack bot token] node ./build/bunld.js
 # build
 npm run docker-builds
 # execute
-docker run -d --restart=on-failure --rm -e SLACK_BOT_TOKEN=[your slack bot token] kazuhito/slack-plantuml-bot
+docker run -d --restart=on-failure -e SLACK_BOT_TOKEN=[your slack bot token] kazuhito/slack-plantuml-bot
 ```
 
 ## 参考
