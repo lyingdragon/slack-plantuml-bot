@@ -69,6 +69,14 @@ describe('PlantUMLサイトのURLを作成するテスト', () => {
 
             expect(actual).toEqual("class Test\nclass Bar");
         })
+
+        test('Slack上のコード表現を除去して文字列と認識する', () => {
+            const parameter: string = "```class Test {\n  - fielad\n  + method()\n}\nTest -- Parent```";
+
+            const actual = new PlantUmlServerUrl(parameter).normalize();
+
+            expect(actual).toEqual("class Test {\n  - fielad\n  + method()\n}\nTest -- Parent");
+        })
     });
 
 });
