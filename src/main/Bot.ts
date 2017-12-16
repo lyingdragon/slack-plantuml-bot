@@ -1,9 +1,7 @@
 import * as Botkit from 'botkit';
 import { SlackController } from 'botkit';
 
-import TestEvent from './event/TestEvent';
-import TestImageEvent from './event/TestImageEvent';
-import EchoEvent from './event/EchoEvent';
+import PlantUmlTextWritedEvent from './event/PlantUmlTextWritedEvent';
 
 export default class Bot {
     /** コンストラクタ。 */
@@ -11,22 +9,20 @@ export default class Bot {
     }
     /** プログラムのエントリーポイント。 */
     public run() {
-        const botToken: any = process.env.token;
+        const botToken = process.env.SLACK_BOT_TOKEN;
         if (!botToken) {
-            console.log('Error: Specify token in environment');
+            console.log('Error: Specify SLACK_BOT_TOKEN in environment');
             process.exit(1);
         }
         const controller: SlackController = Botkit.slackbot({
             debug: true
         });
         controller.spawn({
-            token: botToken
+            token: botToken as string
         }).startRTM();
 
         // イベント登録。
-        new TestEvent(controller).register();
-        new TestImageEvent(controller).register();
-        new EchoEvent(controller).register();
+        new PlantUmlTextWritedEvent(controller).register();
     }
 
 }
