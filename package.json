@@ -12,8 +12,7 @@
     "watch": "webpack -w",
     "test": "jest --no-cache",
     "start": "node build/bundle.js",
-    "postinstall": "npm run build",
-    "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
