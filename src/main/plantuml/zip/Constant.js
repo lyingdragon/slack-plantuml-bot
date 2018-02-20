@@ -1,0 +1,50 @@
+import DeflateConfiguration from './DeflateConfiguration';
+var Constant = (function () {
+    function Constant() {
+    }
+    Constant.DEFAULT_LEVEL = 6;
+    Constant.WSIZE = 32768;
+    Constant.STORED_BLOCK = 0;
+    Constant.STATIC_TREES = 1;
+    Constant.DYN_TREES = 2;
+    Constant.FULL_SEARCH = true;
+    Constant.INBUFSIZ = 32768;
+    Constant.INBUF_EXTRA = 64;
+    Constant.OUTBUFSIZ = 1024 * 8;
+    Constant.WINDOW_SIZE = 2 * Constant.WSIZE;
+    Constant.MIN_MATCH = 3;
+    Constant.MAX_MATCH = 258;
+    Constant.BITS = 16;
+    Constant.LIT_BUFSIZE = 0x2000;
+    Constant.HASH_BITS = 13;
+    Constant.DIST_BUFSIZE = Constant.LIT_BUFSIZE;
+    Constant.HASH_SIZE = 1 << Constant.HASH_BITS;
+    Constant.HASH_MASK = Constant.HASH_SIZE - 1;
+    Constant.WMASK = Constant.WSIZE - 1;
+    Constant.NIL = 0;
+    Constant.TOO_FAR = 4096;
+    Constant.MIN_LOOKAHEAD = Constant.MAX_MATCH + Constant.MIN_MATCH + 1;
+    Constant.MAX_DIST = Constant.WSIZE - Constant.MIN_LOOKAHEAD;
+    Constant.SMALLEST = 1;
+    Constant.MAX_BITS = 15;
+    Constant.MAX_BL_BITS = 7;
+    Constant.LENGTH_CODES = 29;
+    Constant.LITERALS = 256;
+    Constant.END_BLOCK = 256;
+    Constant.L_CODES = Constant.LITERALS + 1 + Constant.LENGTH_CODES;
+    Constant.D_CODES = 30;
+    Constant.BL_CODES = 19;
+    Constant.REP_3_6 = 16;
+    Constant.REPZ_3_10 = 17;
+    Constant.REPZ_11_138 = 18;
+    Constant.HEAP_SIZE = 2 * Constant.L_CODES + 1;
+    Constant.H_SHIFT = (Constant.HASH_BITS + Constant.MIN_MATCH - 1) / Constant.MIN_MATCH;
+    Constant.EXTRA_L_BITS = new Array(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0);
+    Constant.EXTRA_D_BITS = new Array(0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13);
+    Constant.EXTRA_BL_BITS = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 7);
+    Constant.BL_ORDER = new Array(16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15);
+    Constant.CONFIGURATION_TABLE = new Array(new DeflateConfiguration(0, 0, 0, 0), new DeflateConfiguration(4, 4, 8, 4), new DeflateConfiguration(4, 5, 16, 8), new DeflateConfiguration(4, 6, 32, 32), new DeflateConfiguration(4, 4, 16, 16), new DeflateConfiguration(8, 16, 32, 32), new DeflateConfiguration(8, 16, 128, 128), new DeflateConfiguration(8, 32, 128, 256), new DeflateConfiguration(32, 128, 258, 1024), new DeflateConfiguration(32, 258, 258, 4096));
+    return Constant;
+}());
+export default Constant;
+//# sourceMappingURL=Constant.js.map
